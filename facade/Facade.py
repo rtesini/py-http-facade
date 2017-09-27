@@ -1,4 +1,28 @@
 """This module is the core of the HttpFacade."""
+import urllib
+
+# def url_encode(par):
+#     """encode string to url."""
+#     return urllib.urlencode(str(par))
+
+# def url_encode_query(queries):
+#     """encode query to url."""
+#     query = ""
+#     for k in queries.keys():
+#         print "KEY " + k
+#         print "VALUES " + str(queries[k])
+#         cont = 0
+#         for value in queries[k]:
+#             print "CONT " ,  cont
+#             print "VALUE " ,  value
+#             cont += 1
+#             p1 = url_encode(k) 
+#             print "1 " ,  p1
+#             p2 = url_encode(value) 
+#             print "2 " ,  p2
+#             query += p1 + "=" + p2
+
+#     return query
 
 class HttpFacade(object):
     """Http Facade Class"""
@@ -65,5 +89,15 @@ class HttpFacade(object):
         self._body_arr = bytearray()
         self._body_arr.extend(self._body)
         return self
+    
+    def get_url(self):
+        """retreive url from parameters."""
+        query = ""
+        if self.queries:
+            query = "?" + urllib.urlencode(self.queries)
+        return self.base_url + query
+
+    
+
     
 

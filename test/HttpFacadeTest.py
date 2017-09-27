@@ -17,6 +17,7 @@ class HttpFacadeTest(unittest.TestCase):
         self.assertEquals({"tst": ["tst", "tst2"]}, a.headers)
         a.query("tst", "tst").query("tst", "tst2")
         self.assertEquals({"tst": ["tst", "tst2"]}, a.queries)
+        self.assertEquals("tst?tst=%5B%27tst%27%2C+%27tst2%27%5D", a.get_url())
     
     def test_body(self):
         """Test Body"""
@@ -25,4 +26,4 @@ class HttpFacadeTest(unittest.TestCase):
         self.assertEquals("TSTSTSTTTSTTSTS", a._body)
         self.assertEquals("TSTSTSTTTSTTSTS", str(a._body_arr))
         
-        
+    
