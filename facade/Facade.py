@@ -1,5 +1,4 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+"""This module is the core of the HttpFacade."""
 
 class HttpFacade(object):
     """Http Facade Class"""
@@ -8,10 +7,11 @@ class HttpFacade(object):
     method  = None
     base_url = None
     _body = None
+    _body_arr = None
     is_gzip = False
     time_out = 3 * 60 * 1000
-    followRedirects = False
-    fixedSize = False
+    follow_redirects = False
+    fixed_size = False
 
     def __init__(self, base_url):
         self.headers = {}
@@ -47,6 +47,10 @@ class HttpFacade(object):
         self.is_gzip = True
         return self.header("Accept-Encoding", accept_content)
 
+    def withFixedSize(self):
+        """set fixed size to request."""
+        self.fixed_size = True
+        return self
     
     def query(self, key, query):
         """add header to facade."""
@@ -58,4 +62,8 @@ class HttpFacade(object):
     def body(self, body):
         """add body to facade."""
         self._body = body
+        self._body_arr = bytearray()
+        self._body_arr.extend(self._body)
         return self
+    
+
