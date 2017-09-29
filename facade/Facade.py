@@ -1,46 +1,29 @@
 """This module is the core of the HttpFacade."""
-import urllib
-
-# def url_encode(par):
-#     """encode string to url."""
-#     return urllib.urlencode(str(par))
-
-# def url_encode_query(queries):
-#     """encode query to url."""
-#     query = ""
-#     for k in queries.keys():
-#         print "KEY " + k
-#         print "VALUES " + str(queries[k])
-#         cont = 0
-#         for value in queries[k]:
-#             print "CONT " ,  cont
-#             print "VALUE " ,  value
-#             cont += 1
-#             p1 = url_encode(k) 
-#             print "1 " ,  p1
-#             p2 = url_encode(value) 
-#             print "2 " ,  p2
-#             query += p1 + "=" + p2
-
-#     return query
+import urllib,httplib
 
 class HttpFacade(object):
     """Http Facade Class"""
     headers = {}
     queries = {}
+    formParams = {}
+    url = None
     method  = None
-    base_url = None
+    protocol = None
+    domain = None
+    port = 80
+    user = None
+    password = None
+    path = None
     _body = None
     _body_arr = None
     is_gzip = False
     time_out = 3 * 60 * 1000
     follow_redirects = False
-    fixed_size = False
 
-    def __init__(self, base_url):
+    def __init__(self, url):
         self.headers = {}
         self.queries = {}
-        self.base_url = base_url
+        self.url = url
 
     def header(self, key, header):
         """add header to facade."""
@@ -70,11 +53,6 @@ class HttpFacade(object):
         """set GZIP to request."""
         self.is_gzip = True
         return self.header("Accept-Encoding", accept_content)
-
-    def withFixedSize(self):
-        """set fixed size to request."""
-        self.fixed_size = True
-        return self
     
     def query(self, key, query):
         """add header to facade."""
@@ -90,14 +68,20 @@ class HttpFacade(object):
         self._body_arr.extend(self._body)
         return self
     
-    def get_url(self):
+    def __get_url(self):
         """retreive url from parameters."""
         query = ""
         if self.queries:
             query = "?" + urllib.urlencode(self.queries)
         return self.base_url + query
 
-    
+    def __generate_connection(self):
+        """the actual connection."""
+        http = httplib.HTTPConnection(self.__get_url())
+        http.follow_redirects = self.follow_redirects
+        if self.time_out:
+            http.timeout = self.time_out
+        
 
     
 
