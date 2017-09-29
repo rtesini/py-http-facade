@@ -1,19 +1,27 @@
 """This module is the core of the HttpFacade."""
 import urllib,httplib
+from facade.Utils import UrlParserUtil
+
+class Url(object):
+    url = None
+    method  = None
+    protocol = 'http'
+    domain = None
+    port = 80
+    user = None
+    password = None
+    path = None
+    def __init__(self, url):
+        self.url = url
+        http_util = UrlParserUtil("https://aaaa:bbbb@regex101.com:8080/blablabla/blebleble?bli=blo&blu=hgfhgf")
+        self.protocol = http_util.protocol
+        
 
 class HttpFacade(object):
     """Http Facade Class"""
     headers = {}
     queries = {}
     formParams = {}
-    url = None
-    method  = None
-    protocol = None
-    domain = None
-    port = 80
-    user = None
-    password = None
-    path = None
     _body = None
     _body_arr = None
     is_gzip = False
@@ -68,19 +76,19 @@ class HttpFacade(object):
         self._body_arr.extend(self._body)
         return self
     
-    def __get_url(self):
-        """retreive url from parameters."""
-        query = ""
-        if self.queries:
-            query = "?" + urllib.urlencode(self.queries)
-        return self.base_url + query
+    # def __get_url(self):
+    #     """retreive url from parameters."""
+    #     query = ""
+    #     if self.queries:
+    #         query = "?" + urllib.urlencode(self.queries)
+    #     return self.base_url + query
 
-    def __generate_connection(self):
-        """the actual connection."""
-        http = httplib.HTTPConnection(self.__get_url())
-        http.follow_redirects = self.follow_redirects
-        if self.time_out:
-            http.timeout = self.time_out
+    # def __generate_connection(self):
+    #     """the actual connection."""
+    #     http = httplib.HTTPConnection(self.__get_url())
+    #     http.follow_redirects = self.follow_redirects
+    #     if self.time_out:
+    #         http.timeout = self.time_out
         
 
     
