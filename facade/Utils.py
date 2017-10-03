@@ -26,14 +26,16 @@ class UrlParserUtil(object):
             matches = re.search(REGEX_PROTOCOL_NO_BASIC, url)
             self.protocol = matches.group('protocol')
             self.domain = matches.group('domain')
-            self.port = matches.group('port')
+            if(matches.group('port')):
+                self.port = matches.group('port')
             self.path = matches.group('path')
             self.query = matches.group('query')
 
         if(re.search(REGEX_NO_PROTOCOL_NO_BASIC, url)):
             matches = re.search(REGEX_NO_PROTOCOL_NO_BASIC, url)
             self.domain = matches.group('domain')
-            self.port = matches.group('port')
+            if(matches.group('port')):
+                self.port = matches.group('port')
             self.path = matches.group('path')
             self.query = matches.group('query')
 
@@ -41,7 +43,8 @@ class UrlParserUtil(object):
             matches = re.search(REGEX_PROTOCOL_BASIC, url)
             self.protocol = matches.group('protocol')
             self.domain = matches.group('domain')
-            self.port = matches.group('port')
+            if(matches.group('port')):
+                self.port = matches.group('port')
             self.path = matches.group('path')
             self.query = matches.group('query')
             self.user = matches.group('user')
@@ -50,7 +53,8 @@ class UrlParserUtil(object):
         if(re.search(REGEX_NO_PROTOCOL_BASIC, url)):
             matches = re.search(REGEX_NO_PROTOCOL_BASIC, url)
             self.domain = matches.group('domain')
-            self.port = matches.group('port')
+            if(matches.group('port')):
+                self.port = matches.group('port')
             self.path = matches.group('path')
             self.query = matches.group('query')
             self.user = matches.group('user')
