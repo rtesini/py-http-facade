@@ -23,11 +23,13 @@ class HttpFacadeTest(unittest.TestCase):
         http_facade = HttpFacade("luan.xyz")
         http_facade.user("danilo", "xptopass")
         self.assertEquals("danilo:xptopass@luan.xyz", http_facade.url)
+        self.assertTrue("Authentication" in http_facade.headers.keys())
 
     def test_user_http(self):
         http_facade = HttpFacade("https://luan.xyz")
         http_facade.user("danilo", "xptopass")
         self.assertEquals("https://danilo:xptopass@luan.xyz", http_facade.url)
+        self.assertTrue("Authentication" in http_facade.headers.keys())
     
         
     

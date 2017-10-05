@@ -85,11 +85,12 @@ class HttpFacade(object):
     def user(self, user, password):
         """add user and password to request."""
         token = user + ":" + password;
-        re.split("([a-z0-9A-Z]*)://(.*)", self.url)
-        if not matches(self.url, "([a-z0-9A-Z]*)://(.*)") :
+        regex_for_http="([a-z0-9A-Z]*)://(.*)"
+        
+        if not matches(self.url, regex_for_http) :
             self.url = token + "@" + self.url
         else:
-            splited = re.split("([a-z0-9A-Z]*)://(.*)", self.url)
+            splited = re.split(regex_for_http, self.url)
             self.url = splited[1] + "://" + token + "@" + splited[2]
 
         basic = "Basic " + base64.b64encode(token)
