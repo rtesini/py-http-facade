@@ -18,6 +18,16 @@ class HttpFacadeTest(unittest.TestCase):
         self.assertEquals({"tst": ["tst", "tst2"]}, http_facade.headers)
         http_facade.query("tst", "tst").query("tst", "tst2")
         self.assertEquals({"tst": ["tst", "tst2"]}, http_facade.queries)
+
+    def test_user_no_http(self):
+        http_facade = HttpFacade("luan.xyz")
+        http_facade.user("danilo", "xptopass")
+        self.assertEquals("danilo:xptopass@luan.xyz", http_facade.url)
+
+    def test_user_http(self):
+        http_facade = HttpFacade("https://luan.xyz")
+        http_facade.user("danilo", "xptopass")
+        self.assertEquals("https://danilo:xptopass@luan.xyz", http_facade.url)
     
         
     

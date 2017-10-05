@@ -1,6 +1,12 @@
 """This module is the core of the HttpFacade."""
 import urllib,httplib
+import re
+import base64
 from facade.Utils import UrlParserUtil
+
+def matches(value, pattern_to_match):
+    pattern = re.compile(pattern_to_match)
+    return pattern.match(value)
 
 class Url(object):
     url = None
@@ -75,6 +81,19 @@ class HttpFacade(object):
         self._body_arr = bytearray()
         self._body_arr.extend(self._body)
         return self
+
+    def user(self, user, password):
+        """add user and password to request."""
+        token = user + ":" + password;
+        re.split("([a-z0-9A-Z]*)://(.*)", self.url)
+        if not matches(self.url, "([a-z0-9A-Z]*)://(.*)") :
+            self.url = token + "@" + self.url
+        else:
+            splited = re.split("([a-z0-9A-Z]*)://(.*)", self.url)
+            self.url = splited[1] + "://" + token + "@" + splited[2]
+
+        basic = "Basic " + base64.b64encode(token)
+        return self.header("Authentication", basic)
     
     # def __get_url(self):
     #     """retreive url from parameters."""
