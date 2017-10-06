@@ -19,6 +19,12 @@ class HttpFacadeTest(unittest.TestCase):
         http_facade.query("tst", "tst").query("tst", "tst2")
         self.assertEquals({"tst": ["tst", "tst2"]}, http_facade.queries)
 
+    def test_params(self):
+        """Test Params"""
+        http_facade = HttpFacade("tst")
+        http_facade.param("tst", "tst").param("tst", "tst2")
+        self.assertEquals({"tst": ["tst", "tst2"]}, http_facade.form_params)
+        
     def test_user_no_http(self):
         """User Test"""
         http_facade = HttpFacade("luan.xyz")

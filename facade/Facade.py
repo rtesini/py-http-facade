@@ -38,7 +38,7 @@ class HttpFacade(object):
     """Http Facade Class"""
     headers = {}
     queries = {}
-    formParams = {}
+    form_params = {}
     url = None
     url_to = None
     _body = None
@@ -100,6 +100,13 @@ class HttpFacade(object):
         if not key in self.headers :
             self.headers[key] = []
         self.headers[key].append(header)
+        return self
+
+    def param(self, key, param):
+        """add parameters to facade."""
+        if not key in self.form_params :
+            self.form_params[key] = []
+        self.form_params[key].append(param)
         return self
 
     def cookies(self,cookies):
