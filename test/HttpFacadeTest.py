@@ -20,16 +20,27 @@ class HttpFacadeTest(unittest.TestCase):
         self.assertEquals({"tst": ["tst", "tst2"]}, http_facade.queries)
 
     def test_user_no_http(self):
+        """User Test"""
         http_facade = HttpFacade("luan.xyz")
         http_facade.user("danilo", "xptopass")
         self.assertEquals("danilo:xptopass@luan.xyz", http_facade.url)
         self.assertTrue("Authentication" in http_facade.headers.keys())
 
     def test_user_http(self):
+        """User Test 2"""
         http_facade = HttpFacade("https://luan.xyz")
         http_facade.user("danilo", "xptopass")
         self.assertEquals("https://danilo:xptopass@luan.xyz", http_facade.url)
         self.assertTrue("Authentication" in http_facade.headers.keys())
+
+    def test_user_to(self):
+        """UserTo Test"""
+        http_facade = HttpFacade("https://regex101.com:8080/blablabla/blebleble?bli=blo&blu=hgfhgf")
+        self.assertEquals("regex101.com", http_facade.url_to.domain)
+        self.assertEquals("http", http_facade.protocol('http').url_to.protocol)
+        
+        
+        
     
         
     

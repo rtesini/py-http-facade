@@ -9,6 +9,8 @@ REGEX_NO_PROTOCOL_BASIC = r"^(?P<user>[\w|\s]+)\:(?P<pass>[\w|\s]+)\@(?P<domain>
 
 class UrlParserUtil(object):
     """Url Parser Util"""
+    # pylint: disable=too-many-instance-attributes, too-few-public-methods
+    # all attributes are reasonable in this case.
     protocol = 'http'
     domain = None
     port = 80

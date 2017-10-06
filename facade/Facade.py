@@ -1,33 +1,46 @@
 """This module is the core of the HttpFacade."""
-import urllib,httplib
+import urllib, httplib
 import re
 import base64
 from facade.Utils import UrlParserUtil
 
 def matches(value, pattern_to_match):
+    """RE for pattern"""
     pattern = re.compile(pattern_to_match)
     return pattern.match(value)
 
 class Url(object):
-    url = None
-    method  = None
+    """URL T.O."""
+    # pylint: disable=too-many-instance-attributes, too-few-public-methods
+    # all attributes are reasonable in this case.
     protocol = 'http'
     domain = None
     port = 80
     user = None
     password = None
     path = None
+    query = None
+    url = None
+
     def __init__(self, url):
         self.url = url
-        http_util = UrlParserUtil("https://aaaa:bbbb@regex101.com:8080/blablabla/blebleble?bli=blo&blu=hgfhgf")
+        http_util = UrlParserUtil(url)
         self.protocol = http_util.protocol
-        
+        self.domain = http_util.domain
+        self.path = http_util.path
+        self.port = http_util.port
+        self.query = http_util.query
+        self.user = http_util.user
+        self.password = http_util.password
+    
 
 class HttpFacade(object):
     """Http Facade Class"""
     headers = {}
     queries = {}
     formParams = {}
+    url = None
+    url_to = None
     _body = None
     _body_arr = None
     is_gzip = False
@@ -38,14 +51,33 @@ class HttpFacade(object):
         self.headers = {}
         self.queries = {}
         self.url = url
+        self.url_to = Url(self.url)
 
-    def header(self, key, header):
-        """add header to facade."""
-        if not key in self.headers :
-            self.headers[key] = []
-        self.headers[key].append(header)
+    def protocol(self, protocol):
+        """set protocol for request."""
+        setattr(self.url_to, 'protocol', protocol)
         return self
     
+    def domain(self, domain):
+        """set domain for request."""
+        setattr(self.url_to, 'domain', domain)
+        return self
+
+    def port(self, port):
+        """set port for request."""
+        setattr(self.url_to, 'port', port)
+        return self
+
+    def path(self, path):
+        """set path for request."""
+        setattr(self.url_to, 'path', path)
+        return self
+    
+    def url_query(self, query):
+        """set query for request."""
+        setattr(self.url_to, 'query', query)
+        return self
+
     def timeout(self, time):
         """set timeout for request."""
         self.time_out = time
@@ -54,6 +86,20 @@ class HttpFacade(object):
     def notimeout(self):
         """remove timeout from request."""
         self.time_out = None
+        return self
+
+    def query(self, key, query):
+        """add query parameter to facade."""
+        if not key in self.queries :
+            self.queries[key] = []
+        self.queries[key].append(query)
+        return self
+
+    def header(self, key, header):
+        """add header to facade."""
+        if not key in self.headers :
+            self.headers[key] = []
+        self.headers[key].append(header)
         return self
 
     def cookies(self,cookies):
@@ -67,13 +113,6 @@ class HttpFacade(object):
         """set GZIP to request."""
         self.is_gzip = True
         return self.header("Accept-Encoding", accept_content)
-    
-    def query(self, key, query):
-        """add header to facade."""
-        if not key in self.queries :
-            self.queries[key] = []
-        self.queries[key].append(query)
-        return self
 
     def body(self, body):
         """add body to facade."""
@@ -84,6 +123,8 @@ class HttpFacade(object):
 
     def user(self, user, password):
         """add user and password to request."""
+        setattr(self.url_to, 'user', user)
+        setattr(self.url_to, 'password', password)
         token = user + ":" + password;
         regex_for_http="([a-z0-9A-Z]*)://(.*)"
         
