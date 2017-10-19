@@ -21,6 +21,13 @@ class UrlParserUtilTest(unittest.TestCase):
         self.assertEquals("blablabla/blebleble", http_util.path)
         self.assertEquals("bli=blo&blu=hgfhgf", http_util.query)
 
+        http_util = UrlParserUtil("localhost:8000/test/static/hello.html")
+        self.assertEquals("http", http_util.protocol)
+        self.assertEquals("localhost", http_util.domain)
+        self.assertEquals("test/static/hello.html", http_util.path)
+        self.assertEquals('8000', http_util.port)
+    
+
     def test_url_basic_full(self):
         """Test Base"""
         http_util = UrlParserUtil("aaaa:bbbb@www.regex101.com:8080/blablabla/blebleble?bli=blo&blu=hgfhgf")

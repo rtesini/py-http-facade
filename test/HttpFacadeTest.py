@@ -10,6 +10,10 @@ class HttpFacadeTest(unittest.TestCase):
         """Test Base"""
         http_facade = HttpFacade("tst")
         self.assertEquals("tst", http_facade.url)
+        self.assertEquals("tst", http_facade.url_to.domain)
+
+        http_facade = HttpFacade("www.uol.com.br")
+        self.assertEquals("www.uol.com.br", http_facade.url_to.domain)
     
     def test_headers_queries(self):
         """Test Headers"""

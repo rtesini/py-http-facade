@@ -32,7 +32,7 @@ class Url(object):
         self.query = http_util.query
         self.user = http_util.user
         self.password = http_util.password
-    
+
 
 class HttpFacade(object):
     """Http Facade Class"""
@@ -72,7 +72,7 @@ class HttpFacade(object):
         """set path for request."""
         setattr(self.url_to, 'path', path)
         return self
-    
+
     def url_query(self, query):
         """set query for request."""
         setattr(self.url_to, 'query', query)
@@ -90,29 +90,29 @@ class HttpFacade(object):
 
     def query(self, key, query):
         """add query parameter to facade."""
-        if not key in self.queries :
+        if not key in self.queries:
             self.queries[key] = []
         self.queries[key].append(query)
         return self
 
     def header(self, key, header):
         """add header to facade."""
-        if not key in self.headers :
+        if not key in self.headers:
             self.headers[key] = []
         self.headers[key].append(header)
         return self
 
     def param(self, key, param):
         """add parameters to facade."""
-        if not key in self.form_params :
+        if not key in self.form_params:
             self.form_params[key] = []
         self.form_params[key].append(param)
         return self
 
-    def cookies(self,cookies):
+    def cookies(self, cookies):
         """add cookies to request."""
         cookies_str = ""
-        for k in cookies.keys :
+        for k in cookies.keys:
             cookies_str += k + '=' + cookies[k]
         return self.header("Cookie", cookies_str)
 
@@ -132,10 +132,9 @@ class HttpFacade(object):
         """add user and password to request."""
         setattr(self.url_to, 'user', user)
         setattr(self.url_to, 'password', password)
-        token = user + ":" + password;
-        regex_for_http="([a-z0-9A-Z]*)://(.*)"
-        
-        if not matches(self.url, regex_for_http) :
+        token = user + ":" + password
+        regex_for_http = "([a-z0-9A-Z]*)://(.*)"
+        if not matches(self.url, regex_for_http):
             self.url = token + "@" + self.url
         else:
             splited = re.split(regex_for_http, self.url)
@@ -144,20 +143,35 @@ class HttpFacade(object):
         basic = "Basic " + base64.b64encode(token)
         return self.header("Authentication", basic)
     
-    # def __get_url(self):
-    #     """retreive url from parameters."""
-    #     query = ""
-    #     if self.queries:
-    #         query = "?" + urllib.urlencode(self.queries)
-    #     return self.base_url + query
-
-    # def __generate_connection(self):
-    #     """the actual connection."""
-    #     http = httplib.HTTPConnection(self.__get_url())
-    #     http.follow_redirects = self.follow_redirects
-    #     if self.time_out:
-    #         http.timeout = self.time_out
+    def __generate_connection(self):
+        """the actual connection."""
+        http = None
+        print "DOMAIN "
+        domain = self.url_to.domain
         
+        if self.url_to.port != 80 :
+            domain = domain + ":" + str(self.url_to.port)
 
-    
+        print domain
+        if self.url_to.protocol == 'http':
+            print "HTTP"
+            http = httplib.HTTPConnection(domain)
+        else:
+            print "HTTPS"
+            http = httplib.HTTPSConnection(domain)
 
+        http.follow_redirects = self.follow_redirects
+        if self.time_out:
+            http.timeout = self.time_out
+
+        return http
+
+    def get(self):
+        """GET HTTP Method"""
+        conn = self.__generate_connection()
+        print conn
+        print self.url_to.path
+        conn.request("GET", self.url_to.path)
+        r1 = conn.getresponse()
+        print r1.status, r1.reason
+        return r1

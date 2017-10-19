@@ -1,11 +1,13 @@
 """This module is the core of the HttpFacade."""
 import re
 
-REGEX_PROTOCOL_NO_BASIC = r"^(?P<protocol>https*)\:\/\/(?P<domain>[\w|\.]+)\:*(?P<port>\d*)\/(?P<path>[\w|\/]*)\?(?P<query>[\w|\/|\=\&]*)"
-REGEX_PROTOCOL_BASIC = r"^(?P<protocol>https*)\:\/\/(?P<user>[\w|\s]+)\:(?P<pass>[\w|\s]+)\@(?P<domain>[\w|\.]+)\:*(?P<port>\d*)\/(?P<path>[\w|\/]*)\?(?P<query>[\w|\/|\=\&]*)"
+REGEX_PROTOCOL_NO_BASIC = r"^(?P<protocol>https*)\:\/\/(?P<domain>[\w|\.]+)\:*(?P<port>\d*)\/(?P<path>[\w|\/|\.]*)\?(?P<query>[\w|\/|\=\&]*)"
+REGEX_PROTOCOL_BASIC = r"^(?P<protocol>https*)\:\/\/(?P<user>[\w|\s]+)\:(?P<pass>[\w|\s]+)\@(?P<domain>[\w|\.]+)\:*(?P<port>\d*)\/(?P<path>[\w|\/|\.]*)\?(?P<query>[\w|\/|\=\&]*)"
 
-REGEX_NO_PROTOCOL_NO_BASIC = r"^(?P<domain>[\w|\.]+)\:*(?P<port>\d*)\/(?P<path>[\w|\/]*)\?(?P<query>[\w|\/|\=\&]*)"
-REGEX_NO_PROTOCOL_BASIC = r"^(?P<user>[\w|\s]+)\:(?P<pass>[\w|\s]+)\@(?P<domain>[\w|\.]+)\:*(?P<port>\d*)\/(?P<path>[\w|\/]*)\?(?P<query>[\w|\/|\=\&]*)"
+REGEX_NO_PROTOCOL_NO_BASIC = r"^(?P<domain>[\w|\.]+)\:*(?P<port>\d*)\/(?P<path>[\w|\/|\.]*)\?(?P<query>[\w|\/|\=\&]*)"
+REGEX_NO_PROTOCOL_BASIC = r"^(?P<user>[\w|\s]+)\:(?P<pass>[\w|\s]+)\@(?P<domain>[\w|\.]+)\:*(?P<port>\d*)\/(?P<path>[\w|\/|\.]*)\?(?P<query>[\w|\/|\=\&]*)"
+
+REGEX_NO_PROTOCOL_NO_BASIC_NO_QUERY = r"^(?P<domain>[\w|\.]+)\:*(?P<port>\d*)\/(?P<path>[\w|\/|\.]*)"
 
 class UrlParserUtil(object):
     """Url Parser Util"""
@@ -23,18 +25,25 @@ class UrlParserUtil(object):
     
     def __init__(self, url):
         self.url = url
-        self.pattern = re.compile(REGEX_PROTOCOL_NO_BASIC)
-        if(re.search(REGEX_PROTOCOL_NO_BASIC, url)):
-            matches = re.search(REGEX_PROTOCOL_NO_BASIC, url)
-            self.protocol = matches.group('protocol')
+        
+        if(re.search(REGEX_NO_PROTOCOL_NO_BASIC_NO_QUERY, url)):
+            matches = re.search(REGEX_NO_PROTOCOL_NO_BASIC_NO_QUERY, url)
+            self.domain = matches.group('domain')
+            if(matches.group('port')):
+                self.port = matches.group('port')
+            self.path = matches.group('path')
+
+        if(re.search(REGEX_NO_PROTOCOL_NO_BASIC, url)):
+            matches = re.search(REGEX_NO_PROTOCOL_NO_BASIC, url)
             self.domain = matches.group('domain')
             if(matches.group('port')):
                 self.port = matches.group('port')
             self.path = matches.group('path')
             self.query = matches.group('query')
 
-        if(re.search(REGEX_NO_PROTOCOL_NO_BASIC, url)):
-            matches = re.search(REGEX_NO_PROTOCOL_NO_BASIC, url)
+        if(re.search(REGEX_PROTOCOL_NO_BASIC, url)):
+            matches = re.search(REGEX_PROTOCOL_NO_BASIC, url)
+            self.protocol = matches.group('protocol')
             self.domain = matches.group('domain')
             if(matches.group('port')):
                 self.port = matches.group('port')
@@ -61,7 +70,6 @@ class UrlParserUtil(object):
             self.query = matches.group('query')
             self.user = matches.group('user')
             self.password = matches.group('pass')
-            
 
 
         
