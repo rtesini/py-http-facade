@@ -9,6 +9,8 @@ REGEX_NO_PROTOCOL_BASIC = r"^(?P<user>[\w|\s]+)\:(?P<pass>[\w|\s]+)\@(?P<domain>
 
 REGEX_NO_PROTOCOL_NO_BASIC_NO_QUERY = r"^(?P<domain>[\w|\.]+)\:*(?P<port>\d*)\/(?P<path>[\w|\/|\.]*)"
 
+REGEX_NO_PROTOCOL_NO_BASIC_NO_QUERY_NO_PORT = r"^(?P<domain>[\w|\.]+)"
+
 class UrlParserUtil(object):
     """Url Parser Util"""
     # pylint: disable=too-many-instance-attributes, too-few-public-methods
@@ -26,6 +28,10 @@ class UrlParserUtil(object):
     def __init__(self, url):
         self.url = url
         
+        if(re.search(REGEX_NO_PROTOCOL_NO_BASIC_NO_QUERY_NO_PORT, url)):
+            matches = re.search(REGEX_NO_PROTOCOL_NO_BASIC_NO_QUERY_NO_PORT, url)
+            self.domain = matches.group('domain')
+
         if(re.search(REGEX_NO_PROTOCOL_NO_BASIC_NO_QUERY, url)):
             matches = re.search(REGEX_NO_PROTOCOL_NO_BASIC_NO_QUERY, url)
             self.domain = matches.group('domain')
