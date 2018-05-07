@@ -1,5 +1,7 @@
 import time
 import BaseHTTPServer
+import json
+from urlparse import urlparse, parse_qs
 
 HOST_NAME = 'localhost' 
 PORT_NUMBER = 8000 
@@ -17,11 +19,18 @@ class HttpServer(BaseHTTPServer.BaseHTTPRequestHandler):
             s.send_header("Content-type", "text/html")
             s.end_headers()
             s.wfile.write("HELLO")
-        else :
-            s.send_response(200)
-            s.send_header("Content-type", "text/html")
-            s.end_headers()
-            s.wfile.write("TESTE")
+        else:
+            if( 'static/variables.html' in s.path ):
+                query_components = parse_qs(urlparse(s.path).query)
+                s.send_response(200)
+                s.send_header("Content-type", "text/html")
+                s.end_headers()
+                s.wfile.write("VARIABLES:" + json.dumps(query_components))
+            else :
+                s.send_response(200)
+                s.send_header("Content-type", "text/html")
+                s.end_headers()
+                s.wfile.write("TESTE")
 
 if __name__ == '__main__':
     server_class = BaseHTTPServer.HTTPServer

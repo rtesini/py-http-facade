@@ -171,7 +171,11 @@ class HttpFacade(object):
         conn = self.__generate_connection()
         print conn
         print self.url_to.path
-        conn.request("GET", self.url_to.path)
+        path = self.url_to.path
+        if len(self.queries) > 0 :
+            params = urllib.urlencode(self.queries)
+            path = path + '?'+params
+        conn.request("GET", path,'',self.headers)
         r1 = conn.getresponse()
         r1.content = r1.read()
         print r1.status, r1.reason
