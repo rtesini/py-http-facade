@@ -9,9 +9,7 @@ class HttpFacadeTest(unittest.TestCase):
     def test_localhost(self):
         """Test Base"""
         http_facade = HttpFacade("localhost")
-        http_facade.port(8000).path("/test/static/hello.html")
+        http_facade.port(8000).path("static/hello.html")
         res = http_facade.get()
         self.assertEquals(200, res.status)
-
-    
-    
+        self.assertEquals("HELLO", res.content)

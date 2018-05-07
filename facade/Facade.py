@@ -173,5 +173,7 @@ class HttpFacade(object):
         print self.url_to.path
         conn.request("GET", self.url_to.path)
         r1 = conn.getresponse()
+        r1.content = r1.read()
         print r1.status, r1.reason
+        r1.close()
         return r1
