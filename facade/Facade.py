@@ -2,6 +2,7 @@
 import urllib, httplib
 import re
 import base64
+import json
 from facade.Utils import UrlParserUtil
 
 def matches(value, pattern_to_match):
@@ -39,6 +40,7 @@ class HttpFacade(object):
     headers = {}
     queries = {}
     form_params = {}
+    cookies = {}
     url = None
     url_to = None
     _body = None
@@ -94,6 +96,11 @@ class HttpFacade(object):
             self.queries[key] = []
         self.queries[key].append(query)
         return self
+    
+    def cookie(self, key, cookie):
+        """add cookie parameter to facade."""
+        self.cookies[key]=cookie
+        return self
 
     def header(self, key, header):
         """add header to facade."""
@@ -109,12 +116,11 @@ class HttpFacade(object):
         self.form_params[key].append(param)
         return self
 
-    def cookies(self, cookies):
+    def header_cookies(self):
         """add cookies to request."""
-        cookies_str = ""
-        for k in cookies.keys:
-            cookies_str += k + '=' + cookies[k]
-        return self.header("Cookie", cookies_str)
+        if(len(self.cookies)>0):
+            cookies_str = "; ".join([str(x)+"="+str(y) for x,y in self.cookies.items()])
+            return self.header("Cookie", cookies_str)
 
     def gzip(self, accept_content):
         """set GZIP to request."""
@@ -142,22 +148,17 @@ class HttpFacade(object):
 
         basic = "Basic " + base64.b64encode(token)
         return self.header("Authentication", basic)
-    
+
     def __generate_connection(self):
         """the actual connection."""
         http = None
-        print "DOMAIN "
         domain = self.url_to.domain
-        
+        self.header_cookies()
         if self.url_to.port != 80 :
             domain = domain + ":" + str(self.url_to.port)
-
-        print domain
         if self.url_to.protocol == 'http':
-            print "HTTP"
             http = httplib.HTTPConnection(domain)
         else:
-            print "HTTPS"
             http = httplib.HTTPSConnection(domain)
 
         http.follow_redirects = self.follow_redirects
@@ -169,15 +170,12 @@ class HttpFacade(object):
     def get(self):
         """GET HTTP Method"""
         conn = self.__generate_connection()
-        print conn
-        print self.url_to.path
         path = self.url_to.path
         if len(self.queries) > 0 :
             params = urllib.urlencode(self.queries)
             path = path + '?'+params
-        conn.request("GET", path,'',self.headers)
+
+        conn.request("GET", path,None,self.headers)
         r1 = conn.getresponse()
         r1.content = r1.read()
-        print r1.status, r1.reason
-        r1.close()
         return r1

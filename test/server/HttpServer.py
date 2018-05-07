@@ -13,7 +13,7 @@ class HttpServer(BaseHTTPServer.BaseHTTPRequestHandler):
         s.end_headers()
     def do_GET(s):
         """Respond to a GET request."""
-        print ("PATH : " + s.path) 
+        # print ("PATH : " + s.path) 
         if(s.path == 'static/hello.html'):
             s.send_response(200)
             s.send_header("Content-type", "text/html")
@@ -24,6 +24,8 @@ class HttpServer(BaseHTTPServer.BaseHTTPRequestHandler):
                 query_components = parse_qs(urlparse(s.path).query)
                 s.send_response(200)
                 s.send_header("Content-type", "text/html")
+                for key in s.headers.keys():
+                    s.send_header(key,s.headers[key])
                 s.end_headers()
                 s.wfile.write("VARIABLES:" + json.dumps(query_components))
             else :
@@ -35,10 +37,9 @@ class HttpServer(BaseHTTPServer.BaseHTTPRequestHandler):
 if __name__ == '__main__':
     server_class = BaseHTTPServer.HTTPServer
     httpd = server_class((HOST_NAME, PORT_NUMBER), HttpServer)
-    print time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
     httpd.server_close()
-    print time.asctime(), "Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER)
+    
