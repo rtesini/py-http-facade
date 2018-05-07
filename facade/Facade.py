@@ -174,7 +174,6 @@ class HttpFacade(object):
         if len(self.queries) > 0 :
             params = urllib.urlencode(self.queries)
             path = path + '?'+params
-
         conn.request("GET", path,None,self.headers)
         r1 = conn.getresponse()
         r1.content = r1.read()
