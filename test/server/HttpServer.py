@@ -34,6 +34,33 @@ class HttpServer(BaseHTTPServer.BaseHTTPRequestHandler):
                 s.end_headers()
                 s.wfile.write("TESTE")
 
+    def do_POST(s):
+        print "-------------------->" + s.path
+        if(s.path == 'client'):
+            varLen = int(s.headers['Content-Length'])
+            print varLen
+            postVars = s.rfile.read(varLen)
+            print postVars
+            s.send_response(200)
+            s.send_header("Content-type", "text/plain")
+            for key in s.headers.keys():
+                if(key != 'Content-length'):
+                    s.send_header(key,s.headers[key])
+            s.end_headers()
+            s.wfile.write(postVars)
+        else:
+            print "ERROR"
+            varLen = int(s.headers['Content-Length'])
+            postVars = s.rfile.read(varLen)
+            print postVars
+            s.send_response(200)
+            s.send_header("Content-type", "text/plain")
+            for key in s.headers.keys():
+                if(key != 'Content-length'):
+                    s.send_header(key,s.headers[key])
+            s.end_headers()
+            s.wfile.write("ERROR")
+
 if __name__ == '__main__':
     server_class = BaseHTTPServer.HTTPServer
     httpd = server_class((HOST_NAME, PORT_NUMBER), HttpServer)

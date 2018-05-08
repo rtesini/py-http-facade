@@ -19,7 +19,7 @@ class HttpFacadeTest(unittest.TestCase):
         """Test Headers"""
         http_facade = HttpFacade("tst")
         http_facade.header("tst", "tst").header("tst", "tst2")
-        self.assertEquals({"tst": ["tst", "tst2"]}, http_facade.headers)
+        self.assertEquals({"tst": "tst2"}, http_facade.headers)
         http_facade.query("tst", "tst").query("tst", "tst2")
         self.assertEquals({"tst": ["tst", "tst2"]}, http_facade.queries)
 

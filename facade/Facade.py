@@ -104,9 +104,7 @@ class HttpFacade(object):
 
     def header(self, key, header):
         """add header to facade."""
-        if not key in self.headers:
-            self.headers[key] = []
-        self.headers[key].append(header)
+        self.headers[key]=header
         return self
 
     def param(self, key, param):
@@ -132,6 +130,7 @@ class HttpFacade(object):
         self._body = body
         self._body_arr = bytearray()
         self._body_arr.extend(self._body)
+        self.header("Content-Length", len(body))
         return self
 
     def user(self, user, password):
@@ -177,4 +176,16 @@ class HttpFacade(object):
         conn.request("GET", path,None,self.headers)
         r1 = conn.getresponse()
         r1.content = r1.read()
+        return r1
+    
+    def post(self):
+        """POST HTTP Method"""
+        conn = self.__generate_connection()
+        path = self.url_to.path
+        body = None
+        if len(self.form_params) > 0 :
+            body = urllib.urlencode(self.form_params)
+            self.body(body)
+        conn.request("POST", path,body,self.headers)
+        r1 = conn.getresponse()
         return r1
