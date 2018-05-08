@@ -1,7 +1,5 @@
 # py-http-facade
 
-
-
 My take on a simple HTTP Façade for easy request making.
 
 ## Examples
@@ -9,9 +7,9 @@ My take on a simple HTTP Façade for easy request making.
 Simple get:
 
 ```python
-    Response r = HttpFacade("www.google.com").get();
-    r.status() // 200
-    r.content() // <html>...
+    resp = HttpFacade("www.google.com").get();
+    resp.status // 200
+    resp.content // <html>...
 ```
 
 More complex request:
