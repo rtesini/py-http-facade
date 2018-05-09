@@ -36,7 +36,7 @@ class HttpFacadeTest(unittest.TestCase):
         self.assertTrue('hdr_1' in json.dumps(res.getheaders()))
     
     def test_localhost_first_put(self):
-        """Test POST"""
+        """Test PUT"""
         http_facade = HttpFacade("localhost")
         http_facade.port(8000).path("client").param("tst","tst")
         http_facade.header("hdr_1", "hdr_1")
