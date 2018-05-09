@@ -177,15 +177,23 @@ class HttpFacade(object):
         r1 = conn.getresponse()
         r1.content = r1.read()
         return r1
-    
-    def post(self):
-        """POST HTTP Method"""
+
+    def post_put(self, method):
+        """POST-PUT HTTP Method"""
         conn = self.__generate_connection()
         path = self.url_to.path
         body = None
         if len(self.form_params) > 0 :
             body = urllib.urlencode(self.form_params)
             self.body(body)
-        conn.request("POST", path,body,self.headers)
+        conn.request(method, path,body,self.headers)
         r1 = conn.getresponse()
         return r1
+    
+    def post(self):
+        """POST-PUT HTTP Method"""
+        return self.post_put("POST")
+    
+    def put(self):
+        """PUT HTTP Method"""
+        return self.post_put("PUT")

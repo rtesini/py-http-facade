@@ -34,5 +34,15 @@ class HttpFacadeTest(unittest.TestCase):
         self.assertEquals(200, res.status)
         self.assertEquals('tst=%5B%27tst%27%2C+%27tst2%27%2C+%27tst%27%5D', res.read())
         self.assertTrue('hdr_1' in json.dumps(res.getheaders()))
+    
+    def test_localhost_first_put(self):
+        """Test POST"""
+        http_facade = HttpFacade("localhost")
+        http_facade.port(8000).path("client").param("tst","tst")
+        http_facade.header("hdr_1", "hdr_1")
+        res = http_facade.put()
+        self.assertEquals(200, res.status)
+        self.assertEquals('tst=%5B%27tst%27%2C+%27tst2%27%2C+%27tst%27%5D', res.read())
+        self.assertTrue('hdr_1' in json.dumps(res.getheaders()))
         
         
